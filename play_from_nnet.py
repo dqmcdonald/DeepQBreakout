@@ -15,19 +15,29 @@ import nnetwork
 import observations
 import argparse
 import os
+import numpy as np
 
-LEARN_RATE = 1e-4
+
 ACTIONS_COUNT = 3
-MINI_BATCH_SIZE = 128
-SAVE_CHECK_EVERY_X = 2000  # Save checkpoint every 10000 steps
-PRINT_EVERY_X = 500
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("name", help="The name for the observations and checkpoint files");
-parser.add_argument("-n", "--nsteps", type=int, 
-   dest="nsteps", help="The number of steps of training to be performed", default=20000)
+parser.add_argument("-n", "--ngames", type=int, 
+   dest="num_games", help="The number of games to be played", default=200)
+parser.add_argument("-s", "--save_obs", type=str, 
+dest="save_obs", help="The file name to save oversvations to", default="")
 args = parser.parse_args()
 
+
+obs = observations.Observations()
+obsfilename = args.name + ".obs"
+obs.loadFromFile(obsfilename)
+
+
+scores_per_game = []
+num_games = 0
+high_score=0
 
 
 chkfilename = "./" + args.name 
@@ -50,4 +60,43 @@ else:
     raise ValueError("Checkpoint not found")
 
 
+
+env = gym.make("Breakout-v0")
+env.reset()
+env.render()
+    
+    
+current_game_score = 0
+ # Set the first action to do nothing
+last_action = np.zeros(ACTIONS_COUNT)
+last_action[1] = 1  
+
+while num_games < args.num_games:          
+    
+       
+    env.render()
+    screen_image, reward, terminal, info = env.step(nnetwork.key_presses_from_action(last_action))
+    current_game_score += reward
+    obs.addObservation( screen_image, terminal, last_action, reward)
+    last_state = obs.getLastState()
+    last_action = nnetwork.choose_next_action(session, input_layer,output_layer, last_state )
+    
+    if terminal:
+        num_games += 1
+        scores_per_game.append(current_game_score)
+        if current_game_score > high_score:
+            high_score = current_game_score
+        current_game_score = 0
+        env.reset()
+         
+
+env.close()
+
+if args.save_obs:
+    save_file_name = args.save_obs + ".obs"
+    print("Saving observations as {}".format(save_file_name))
+    obs.saveToFile(save_file_name)
+
+print("Average score per game = {:.2f} from {} games".format(np.mean(np.array(scores_per_game)), num_games))
+print("High score = {}".format(high_score))
 

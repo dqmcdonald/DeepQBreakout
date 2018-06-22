@@ -34,6 +34,9 @@ class Observations(object):
     def __len__(self):
         return len(self.observations)
     
+    def getLastState(self):
+        return self.last_state
+    
     def addObservation(self,screen_image, terminal, action, reward ):
         """
         Add an observation.

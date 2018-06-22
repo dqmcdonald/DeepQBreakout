@@ -93,7 +93,7 @@ def create_network():
     return input_layer, output_layer, action, target, train_operation
 
 
-def choose_next_action(session, input_layer, output_layer, state, random_prob = 0.0):
+def choose_next_action(session, input_layer, output_layer, state, random_prob = 1.0):
     
     new_action = np.zeros([ACTIONS_COUNT])
     
