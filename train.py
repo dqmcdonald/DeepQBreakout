@@ -73,5 +73,5 @@ while step < args.nsteps:
         print("Saved file checkpoint: " + saved_file)
 
     if step % PRINT_EVERY_X == 0:
-        print("Completed training step {:5d} out of a total {:5d} in {:3d} seconds".format(step, args.nsteps, time.time()-start_time))
+        print("Completed training step {:5d} out of a total {:5d} in {:.1f} seconds".format(step, args.nsteps, time.time()-start_time))
         start_time = time.time()
