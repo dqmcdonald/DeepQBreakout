@@ -15,6 +15,7 @@ import nnetwork
 import observations
 import argparse
 import os
+import time
 
 LEARN_RATE = 1e-4
 ACTIONS_COUNT = 3
@@ -60,6 +61,7 @@ if os.path.exists(chkfilename + ".meta"):
 
 step = 0
 
+start_time = time.time()
 while step < args.nsteps:
     
     step += 1
@@ -71,4 +73,5 @@ while step < args.nsteps:
         print("Saved file checkpoint: " + saved_file)
 
     if step % PRINT_EVERY_X == 0:
-        print("Completed training step {:5d} out of a total {:5d}".format(step, args.nsteps))
+        print("Completed training step {:5d} out of a total {:5d} in {:3d} seconds".format(step, args.nsteps, time.time()-start_time))
+        start_time = time.time()
