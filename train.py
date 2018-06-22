@@ -20,8 +20,8 @@ import time
 LEARN_RATE = 1e-4
 ACTIONS_COUNT = 3
 MINI_BATCH_SIZE = 128
-SAVE_CHECK_EVERY_X = 2000  # Save checkpoint every 10000 steps
-PRINT_EVERY_X = 500
+SAVE_CHECK_EVERY_X = 5000  # Save checkpoint every 10000 steps
+PRINT_EVERY_X = 2000
 
 parser = argparse.ArgumentParser()
 parser.add_argument("name", help="The name for the observations and checkpoint files");

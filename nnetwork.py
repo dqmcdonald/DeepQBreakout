@@ -28,7 +28,7 @@ OBS_LAST_STATE_INDEX, OBS_ACTION_INDEX, OBS_REWARD_INDEX, OBS_CURRENT_STATE_INDE
 SAVE_EVERY_X_STEPS = 2000
 LEARN_RATE = 1e-4
 STORE_SCORES_LEN = 100
-verbose_logging = False
+
 PRINT_EVERY_X_STEPS = 5000
 
 
@@ -93,7 +93,7 @@ def create_network():
     return input_layer, output_layer, action, target, train_operation
 
 
-def choose_next_action(session, input_layer, output_layer, state, random_prob = 1.0):
+def choose_next_action(session, input_layer, output_layer, state, random_prob = 0.0):
     
     new_action = np.zeros([ACTIONS_COUNT])
     
@@ -104,8 +104,8 @@ def choose_next_action(session, input_layer, output_layer, state, random_prob = 
         # Choose an action given our last state:
         readout_t = session.run(output_layer, feed_dict={input_layer :[state]})[0]
         
-        if verbose_logging:
-            print("Action Q-values are %s" % readout_t)
+        
+        #print("Action Q-values are %s" % readout_t)
         
         action_index = np.argmax(readout_t)
         

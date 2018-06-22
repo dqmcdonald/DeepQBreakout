@@ -25,6 +25,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("name", help="The name for the observations and checkpoint files");
 parser.add_argument("-n", "--ngames", type=int, 
    dest="num_games", help="The number of games to be played", default=200)
+parser.add_argument("-r", "--random_prob", type=float, 
+   dest="random_prob", help="The fraction of moves to be random", default=0.0)
 parser.add_argument("-s", "--save_obs", type=str, 
 dest="save_obs", help="The file name to save oversvations to", default="")
 args = parser.parse_args()
@@ -79,7 +81,7 @@ while num_games < args.num_games:
     current_game_score += reward
     obs.addObservation( screen_image, terminal, last_action, reward)
     last_state = obs.getLastState()
-    last_action = nnetwork.choose_next_action(session, input_layer,output_layer, last_state )
+    last_action = nnetwork.choose_next_action(session, input_layer,output_layer, last_state, random_prob=args.random_prob)
     
     if terminal:
         num_games += 1
