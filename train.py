@@ -16,6 +16,7 @@ import observations
 import argparse
 import os
 import time
+import sys
 
 LEARN_RATE = 1e-4
 ACTIONS_COUNT = 3
@@ -62,6 +63,8 @@ if os.path.exists(chkfilename + ".meta"):
 step = 0
 
 start_time = time.time()
+print("Starting training for {} steps".format(args.nsteps))
+sys.stdout.flush()
 while step < args.nsteps:
     
     step += 1
@@ -75,3 +78,4 @@ while step < args.nsteps:
     if step % PRINT_EVERY_X == 0:
         print("Completed training step {:5d} out of a total {:5d} in {:.1f} seconds".format(step, args.nsteps, time.time()-start_time))
         start_time = time.time()
+        sys.stdout.flush()
