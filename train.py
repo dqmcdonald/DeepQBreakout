@@ -21,7 +21,7 @@ import sys
 LEARN_RATE = 1e-4
 ACTIONS_COUNT = 3
 MINI_BATCH_SIZE = 128
-SAVE_CHECK_EVERY_X = 5000  # Save checkpoint every 10000 steps
+SAVE_CHECK_EVERY_X = 5000  # Save checkpoint every 5000 steps
 PRINT_EVERY_X = 2000
 
 parser = argparse.ArgumentParser()
@@ -55,10 +55,8 @@ saver = tf.train.Saver(max_to_keep=1)
 
 if os.path.exists(chkfilename + ".meta"):
     print("Restoring from checkpoint file {}".format(chkfilename))
-    checkpoint = tf.train.get_checkpoint_state(chkfilename)
-    if checkpoint:
-        saver.restore( session, checkpoint.model_checkpoint_path)
-
+    saver.restore( session, chkfilename)
+    print("Done restoration")
 
 step = 0
 

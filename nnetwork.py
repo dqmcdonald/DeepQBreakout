@@ -27,49 +27,45 @@ def create_network():
     CONVOLUTIONS_LAYER_1 = 32
     CONVOLUTIONS_LAYER_2 = 64
     CONVOLUTIONS_LAYER_3 = 64
-    FLAT_HIDDEN_NODES = 512
     FLAT_SIZE = 11*9*CONVOLUTIONS_LAYER_3
-    WINDOW_SIZE_1 = 8
-    WINDOW_SIZE_2 = 4
-    WINDOW_SIZE_3 = 3
-    
-    input_layer = tf.placeholder("float", [None,SCREEN_HEIGHT, SCREEN_WIDTH, STATE_FRAMES])
-    
-    convolution_weights_1 = tf.Variable(tf.truncated_normal([WINDOW_SIZE_1,WINDOW_SIZE_1,STATE_FRAMES, CONVOLUTIONS_LAYER_1], stddev=0.01))
-    convolution_bias_1 = tf.Variable(tf.constant(0.01, shape=[CONVOLUTIONS_LAYER_1]))
-    
-    hidden_convolution_layer_1 = tf.nn.relu( tf.nn.conv2d( input_layer, convolution_weights_1, strides=[1,4,4,1], 
-                                                         padding = "SAME") + convolution_bias_1)
-    
-    
-    convolution_weights_2 = tf.Variable(tf.truncated_normal([WINDOW_SIZE_2,WINDOW_SIZE_2,CONVOLUTIONS_LAYER_1, CONVOLUTIONS_LAYER_2], stddev=0.01))
-    convolution_bias_2 = tf.Variable(tf.constant(0.01, shape=[CONVOLUTIONS_LAYER_2]))
-    
-    hidden_convolution_layer_2 = tf.nn.relu( tf.nn.conv2d( hidden_convolution_layer_1, convolution_weights_2, strides=[1,2,2,1], 
-                                                         padding = "SAME") + convolution_bias_2)
-    
-    
-    convolution_weights_3 = tf.Variable(tf.truncated_normal([WINDOW_SIZE_3,WINDOW_SIZE_3,CONVOLUTIONS_LAYER_2, CONVOLUTIONS_LAYER_3], stddev=0.01))
-    convolution_bias_3 = tf.Variable(tf.constant(0.01, shape=[CONVOLUTIONS_LAYER_2]))
-    
-    hidden_convolution_layer_3 = tf.nn.relu( tf.nn.conv2d( hidden_convolution_layer_2, convolution_weights_3, strides=[1,1,1,1], 
-                                                         padding = "SAME") + convolution_bias_3)
+    FLAT_HIDDEN_NODES = 512
 
-    hidden_convolution_layer_3_flat = tf.reshape(hidden_convolution_layer_3, [-1,FLAT_SIZE])
-    
-    feed_forward_weights_1 = tf.Variable( tf.truncated_normal([FLAT_SIZE, FLAT_HIDDEN_NODES],stddev=0.01))
-    
-    feed_forward_bias_1 = tf.Variable( tf.constant( 0.01, shape=[FLAT_HIDDEN_NODES]))
-    
-    final_hidden_activations = tf.nn.relu( tf.matmul(hidden_convolution_layer_3_flat, feed_forward_weights_1) +
-                                        feed_forward_bias_1)
-    
-    feed_forward_weights_2 = tf.Variable(tf.truncated_normal([FLAT_HIDDEN_NODES, ACTIONS_COUNT],stddev=0.01))
-    
+    # network weights
+    convolution_weights_1 = tf.Variable(tf.truncated_normal([8, 8, STATE_FRAMES, CONVOLUTIONS_LAYER_1], stddev=0.01))
+    convolution_bias_1 = tf.Variable(tf.constant(0.01, shape=[CONVOLUTIONS_LAYER_1]))
+
+    convolution_weights_2 = tf.Variable(tf.truncated_normal([4, 4, CONVOLUTIONS_LAYER_1, CONVOLUTIONS_LAYER_2], stddev=0.01))
+    convolution_bias_2 = tf.Variable(tf.constant(0.01, shape=[CONVOLUTIONS_LAYER_2]))
+
+    convolution_weights_3 = tf.Variable(tf.truncated_normal([3, 3, CONVOLUTIONS_LAYER_2, CONVOLUTIONS_LAYER_3], stddev=0.01))
+    convolution_bias_3 = tf.Variable(tf.constant(0.01, shape=[CONVOLUTIONS_LAYER_2]))
+
+    feed_forward_weights_1 = tf.Variable(tf.truncated_normal([FLAT_SIZE, FLAT_HIDDEN_NODES], stddev=0.01))
+    feed_forward_bias_1 = tf.Variable(tf.constant(0.01, shape=[FLAT_HIDDEN_NODES]))
+
+    feed_forward_weights_2 = tf.Variable(tf.truncated_normal([FLAT_HIDDEN_NODES, ACTIONS_COUNT], stddev=0.01))
     feed_forward_bias_2 = tf.Variable(tf.constant(0.01, shape=[ACTIONS_COUNT]))
-    
+
+    input_layer = tf.placeholder("float", [None, SCREEN_HEIGHT, SCREEN_WIDTH,
+                                           STATE_FRAMES], name = "input_layer")
+
+    hidden_convolutional_layer_1 = tf.nn.relu(
+        tf.nn.conv2d(input_layer, convolution_weights_1, strides=[1, 4, 4, 1], padding="SAME") + convolution_bias_1)
+
+    hidden_convolutional_layer_2 = tf.nn.relu(
+        tf.nn.conv2d(hidden_convolutional_layer_1, convolution_weights_2, strides=[1, 2, 2, 1],
+                     padding="SAME") + convolution_bias_2)
+
+    hidden_convolutional_layer_3 = tf.nn.relu(
+        tf.nn.conv2d(hidden_convolutional_layer_2, convolution_weights_3, strides=[1, 1, 1, 1],
+                     padding="SAME") + convolution_bias_3)
+
+    hidden_convolutional_layer_3_flat = tf.reshape(hidden_convolutional_layer_3, [-1, FLAT_SIZE])
+
+    final_hidden_activations = tf.nn.relu(
+        tf.matmul(hidden_convolutional_layer_3_flat, feed_forward_weights_1) + feed_forward_bias_1)
+
     output_layer = tf.matmul(final_hidden_activations, feed_forward_weights_2) + feed_forward_bias_2
-    
     
     action = tf.placeholder("float", [None,ACTIONS_COUNT])
     target = tf.placeholder("float", [None])
