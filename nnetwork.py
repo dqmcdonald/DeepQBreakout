@@ -1,23 +1,12 @@
 
 # 
-
-
 import random
-
 import tensorflow as tf
-
 import numpy as np
-
-
-
-
-
-
 
 
 SCREEN_HEIGHT = 84
 SCREEN_WIDTH = 72
-
 
 ACTIONS_COUNT = 3
 FUTURE_REWARDS_DISCOUNT = 0.99
@@ -100,11 +89,10 @@ def choose_next_action(session, input_layer, output_layer, state, random_prob = 
     if random.random() <= random_prob:
         # choose a random action:
         action_index = random.randrange(ACTIONS_COUNT)
+        #print("Random index = ", action_index )
     else:
         # Choose an action given our last state:
         readout_t = session.run(output_layer, feed_dict={input_layer :[state]})[0]
-        
-        
         #print("Action Q-values are %s" % readout_t)
         
         action_index = np.argmax(readout_t)
