@@ -71,6 +71,7 @@ def main(win):
                         high_score = current_game_score
                     current_game_score = 0
                     env.reset()
+                    obs.resetLastState()
          
 
 curses.wrapper(main)

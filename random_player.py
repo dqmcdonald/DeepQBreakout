@@ -49,6 +49,7 @@ while len(obs) < 20000:
             high_score = current_game_score
         current_game_score = 0
         env.reset()
+        obs.resetLastState()
          
 
 env.close()

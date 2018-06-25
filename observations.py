@@ -36,6 +36,10 @@ class Observations(object):
     
     def getLastState(self):
         return self.last_state
+
+    def resetLastState(self):
+        self.last_state = None
+        return
     
     def addObservation(self,screen_image, terminal, action, reward ):
         """
@@ -113,3 +117,4 @@ class Observations(object):
         return (previous_states, actions, rewards, current_states, terminal)
         
         
+
