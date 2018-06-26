@@ -1,2 +1,2 @@
-model_checkpoint_path: "random"
-all_model_checkpoint_paths: "random"
+model_checkpoint_path: "manual"
+all_model_checkpoint_paths: "manual"
