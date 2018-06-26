@@ -85,12 +85,12 @@ def choose_next_action(session, input_layer, output_layer, state, random_prob = 
     if random.random() <= random_prob:
         # choose a random action:
         action_index = random.randrange(ACTIONS_COUNT)
-        #print("Random index = ", action_index )
+        print("Random index = ", action_index )
     else:
         # Choose an action given our last state:
         readout_t = session.run(output_layer, feed_dict={input_layer :[state]})[0]
-        #print("Action Q-values are %s" % readout_t)
-        
+        print("Action Q-values are %s" % readout_t)
+       
         action_index = np.argmax(readout_t)
         
     new_action[action_index] = 1

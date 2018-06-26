@@ -104,7 +104,7 @@ while num_games < args.num_games:
         screen_binary = np.reshape(screen_binary,
                                    (SCREEN_HEIGHT, SCREEN_WIDTH, 1))
         current_state = np.append(_last_state[:, :, 1:], screen_binary, axis=2)
-    obs.addObservation( screen_image, terminal, last_action, reward)
+    obs.addObservation( screen_image, terminal, _last_action, reward)
     _last_action = nnetwork.choose_next_action(session, input_layer,output_layer, _last_state, 
         random_prob=args.random_prob)
     
